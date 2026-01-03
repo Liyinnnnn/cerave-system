@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Required field validation styling */
+input:required:invalid,
+textarea:required:invalid,
+select:required:invalid {
+  border-color: #fee;
+}
+
+input:required:valid,
+textarea:required:valid,
+select:required:valid {
+  border-color: #e5e7eb;
+}
+
+/* Toast notification animation */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}

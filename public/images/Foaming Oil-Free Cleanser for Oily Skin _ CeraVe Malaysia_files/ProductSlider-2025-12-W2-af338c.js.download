@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["ProductSlider-2025-12-W2-af338c"],{"8f14":function(c,o,e){"use strict";e.r(o);var n=e("4c64"),t=e("7395");o.default=Object(n.a)({components:{ProductSlider:t.a}})}}]);

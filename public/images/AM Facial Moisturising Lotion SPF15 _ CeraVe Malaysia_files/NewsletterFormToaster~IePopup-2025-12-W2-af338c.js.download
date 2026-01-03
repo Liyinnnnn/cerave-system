@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["NewsletterFormToaster~IePopup-2025-12-W2-af338c"],{"64a0":function(n,e,t){"use strict";function r(){return!!(window.navigator.userAgent.indexOf("MSIE ")>0||navigator.userAgent.match(/Trident.*rv\:11\./))}t.d(e,"a",(function(){return r})),t("4917"),t("57e7")}}]);

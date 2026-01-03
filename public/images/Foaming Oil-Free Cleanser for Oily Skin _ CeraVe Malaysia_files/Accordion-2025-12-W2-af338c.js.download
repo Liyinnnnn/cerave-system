@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([["Accordion-2025-12-W2-af338c"],{"9e40":function(c,o,n){"use strict";n.r(o);var a=n("4c64"),e=n("3f46");o.default=Object(a.a)({components:{Accordion:e.a}})}}]);
