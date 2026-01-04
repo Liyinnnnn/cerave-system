@@ -28,12 +28,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'country_code',
         'profile_picture',
         'password',
+        'provider',
+        'provider_id',
         'role',
         'skin_type',
         'skin_concerns',
         'skin_conditions',
         'using_products',
         'skincare_profile_updated_at',
+        'email_verified_at',
     ];
 
     /**

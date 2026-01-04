@@ -2,16 +2,20 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 return new class extends Migration {
     public function up(): void
     {
-        // Set password to null for users likely created via OAuth
-        // (they were auto-verified on creation)
+        // Ensure OAuth-created users have a non-null random password to satisfy DB constraints.
+        $placeholder = Hash::make(Str::random(32));
+
         DB::table('users')
             ->whereNotNull('email_verified_at')
             ->where('role', 'consumer') // Only consumer accounts auto-verified
-            ->update(['password' => null]);
+            ->whereNull('password')
+            ->update(['password' => $placeholder]);
     }
 
     public function down(): void

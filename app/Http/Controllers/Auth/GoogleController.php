@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\RedirectResponse;
@@ -19,26 +18,36 @@ class GoogleController extends Controller
 
     public function callback(): RedirectResponse
     {
-        $googleUser = Socialite::driver('google')->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
-        $user = User::where('email', $googleUser->getEmail())->first();
+        $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
-        if (!$user) {
-            $user = User::create([
+        if (!$user->exists) {
+            $user->fill([
                 'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Google User',
                 'nickname' => $googleUser->getNickname(),
-                'email' => $googleUser->getEmail(),
-                'password' => null, // No password set yet for OAuth users
+                'password' => Str::random(32),
                 'role' => 'consumer',
-                // mark email verified since Google confirms ownership
+                'provider' => 'google',
+                'provider_id' => $googleUser->getId(),
                 'email_verified_at' => now(),
-            ]);
+            ])->save();
         } else {
-            // ensure email verified if logging in via Google
+            $user->fill([
+                'nickname' => $user->nickname ?: $googleUser->getNickname(),
+                'provider' => $user->provider ?: 'google',
+                'provider_id' => $user->provider_id ?: $googleUser->getId(),
+            ]);
+
             if (is_null($user->email_verified_at)) {
                 $user->email_verified_at = now();
-                $user->save();
             }
+
+            if (empty($user->password)) {
+                $user->password = Str::random(32);
+            }
+
+            $user->save();
         }
 
         Auth::login($user, true);

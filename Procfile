@@ -1,1 +1,1 @@
-web: APP_ENV=production php artisan migrate --force 2>/dev/null || true && php -S 0.0.0.0:$PORT server.php
+web: php artisan migrate --force && php artisan storage:link && php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public
