@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Trust Railway/Nginx proxies so HTTPS is detected and secure cookies work.
         $middleware->trustProxies(
-            at: '*',
+            proxies: '*',
             headers: Request::HEADER_X_FORWARDED_FOR
                 | Request::HEADER_X_FORWARDED_HOST
                 | Request::HEADER_X_FORWARDED_PORT
