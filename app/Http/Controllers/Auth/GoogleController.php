@@ -13,12 +13,22 @@ class GoogleController extends Controller
 {
     public function redirect(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        try {
+            return Socialite::driver('google')->stateless()->redirect();
+        } catch (\Exception $e) {
+            \Log::error('Google OAuth redirect failed: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Unable to connect to Google. Please try again.');
+        }
     }
 
     public function callback(): RedirectResponse
     {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+        } catch (\Exception $e) {
+            \Log::error('Google OAuth callback failed: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Google authentication failed. Please try again.');
+        }
 
         $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
