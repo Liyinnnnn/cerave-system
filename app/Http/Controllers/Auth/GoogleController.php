@@ -14,10 +14,16 @@ class GoogleController extends Controller
     public function redirect(): RedirectResponse
     {
         try {
+            \Log::info('Google OAuth redirect attempt - CLIENT_ID: ' . config('services.google.client_id'));
             return Socialite::driver('google')->stateless()->redirect();
         } catch (\Exception $e) {
-            \Log::error('Google OAuth redirect failed: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'Unable to connect to Google. Please try again.');
+            \Log::error('Google OAuth redirect FAILED', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect('/login')->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
