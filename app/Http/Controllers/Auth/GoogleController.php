@@ -34,7 +34,9 @@ class GoogleController extends Controller
     public function callback(): RedirectResponse
     {
         try {
+            \Log::info('=== GOOGLE CALLBACK STARTED ===');
             $googleUser = Socialite::driver('google')->stateless()->user();
+            \Log::info('Got Google user: ' . $googleUser->getEmail());
         } catch (\Exception $e) {
             \Log::error('Google OAuth callback failed: ' . $e->getMessage());
             return redirect('/login')->with('error', 'Google authentication failed. Please try again.');
@@ -43,6 +45,7 @@ class GoogleController extends Controller
         $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
         if (!$user->exists) {
+            \Log::info('Creating new user from Google OAuth');
             $user->fill([
                 'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Google User',
                 'nickname' => $googleUser->getNickname(),
@@ -53,6 +56,7 @@ class GoogleController extends Controller
                 'email_verified_at' => now(),
             ])->save();
         } else {
+            \Log::info('Updating existing user from Google OAuth');
             $user->fill([
                 'nickname' => $user->nickname ?: $googleUser->getNickname(),
                 'provider' => $user->provider ?: 'google',
@@ -70,7 +74,10 @@ class GoogleController extends Controller
             $user->save();
         }
 
+        \Log::info('About to call Auth::login for user: ' . $user->email);
         Auth::login($user, true);
+        \Log::info('Auth::login called. Session ID: ' . session()->getId());
+        \Log::info('User authenticated: ' . Auth::check());
 
         return redirect()->intended('/dashboard');
     }
