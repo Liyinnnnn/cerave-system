@@ -12,6 +12,13 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        \Log::info('Dashboard accessed', [
+            'authenticated' => auth()->check(),
+            'user_id' => auth()->id(),
+            'session_id' => request()->session()->getId(),
+            'has_laravel_session_cookie' => isset($_COOKIE[config('session.cookie')] ?? null),
+        ]);
+        
         // Fetch ALL products from database with pagination (12 per page) - aligned with products page
         $products = Product::with('reviews')->paginate(12);
 

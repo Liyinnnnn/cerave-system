@@ -21,6 +21,8 @@ class GoogleController extends Controller
     {
         \Log::info('Google OAuth callback hit');
         $googleUser = Socialite::driver('google')->stateless()->user();
+        
+        \Log::info('Google user data', ['email' => $googleUser->getEmail(), 'id' => $googleUser->getId()]);
 
         $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
@@ -34,6 +36,7 @@ class GoogleController extends Controller
                 'provider_id' => $googleUser->getId(),
                 'email_verified_at' => now(),
             ])->save();
+            \Log::info('New user created', ['id' => $user->id, 'email' => $user->email]);
         } else {
             $user->fill([
                 'nickname' => $user->nickname ?: $googleUser->getNickname(),
@@ -50,14 +53,17 @@ class GoogleController extends Controller
             }
 
             $user->save();
+            \Log::info('Existing user updated', ['id' => $user->id, 'email' => $user->email]);
         }
 
         Auth::login($user, true);
+        \Log::info('User authenticated', ['user_id' => Auth::id(), 'authenticated' => Auth::check()]);
         
         // Explicitly save session to ensure authentication persists
         request()->session()->save();
         
-        \Log::info('Session saved after login', ['user_id' => $user->id, 'session_id' => request()->session()->getId()]);
+        $sessionId = request()->session()->getId();
+        \Log::info('Session saved', ['session_id' => $sessionId, 'cookie_name' => config('session.cookie')]);
 
         return redirect()->intended('/dashboard');
     }
