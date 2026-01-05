@@ -53,6 +53,8 @@ class GoogleController extends Controller
         }
 
         Auth::login($user, true);
+        
+        request()->session()->regenerate();
 
         return redirect()->intended('/dashboard');
     }
