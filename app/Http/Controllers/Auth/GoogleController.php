@@ -14,13 +14,13 @@ class GoogleController extends Controller
     public function redirect(): RedirectResponse
     {
         \Log::info('Google OAuth redirect hit');
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback(): RedirectResponse
     {
         \Log::info('Google OAuth callback hit');
-        $googleUser = Socialite::driver('google')->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
         $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
