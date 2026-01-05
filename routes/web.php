@@ -132,11 +132,9 @@ Route::middleware('auth')->group(function () {
 // Allow appointment creation for guests and authenticated users
 Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
 
-// OAuth (Google)
-Route::middleware('guest')->group(function () {
-    Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
-        ->name('oauth.google.redirect');
-    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
-});
+// OAuth (Google) - Remove guest middleware to prevent blocking
+Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
+    ->name('oauth.google.redirect');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
 
 require __DIR__ . '/auth.php';
