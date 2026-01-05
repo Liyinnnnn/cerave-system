@@ -14,13 +14,13 @@ class GoogleController extends Controller
     public function redirect(): RedirectResponse
     {
         \Log::info('Google OAuth redirect hit');
-        return Socialite::driver('google')->stateless()->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     public function callback(): RedirectResponse
     {
         \Log::info('Google OAuth callback hit');
-        $googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')->user();
 
         $user = User::firstOrNew(['email' => $googleUser->getEmail()]);
 
@@ -53,10 +53,6 @@ class GoogleController extends Controller
         }
 
         Auth::login($user, true);
-        
-        request()->session()->regenerate();
-        
-        \Log::info('User logged in and session regenerated', ['user_id' => $user->id, 'authenticated' => Auth::check()]);
 
         return redirect()->intended('/dashboard');
     }
