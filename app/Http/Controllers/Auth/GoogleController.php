@@ -13,9 +13,13 @@ class GoogleController extends Controller
 {
     public function redirect(): RedirectResponse
     {
+        \Log::info('=== GOOGLE REDIRECT ROUTE HIT ===');
         try {
             \Log::info('Google OAuth redirect attempt - CLIENT_ID: ' . config('services.google.client_id'));
-            return Socialite::driver('google')->stateless()->redirect();
+            \Log::info('Calling Socialite::driver(google)->stateless()->redirect()');
+            $redirectUrl = Socialite::driver('google')->stateless()->redirect();
+            \Log::info('Redirect URL generated successfully, redirecting to Google');
+            return $redirectUrl;
         } catch (\Exception $e) {
             \Log::error('Google OAuth redirect FAILED', [
                 'message' => $e->getMessage(),
