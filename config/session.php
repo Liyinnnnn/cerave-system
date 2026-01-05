@@ -156,7 +156,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('SESSION_DOMAIN', parse_url(config('app.url'), PHP_URL_HOST)),
 
     /*
     |--------------------------------------------------------------------------
@@ -199,7 +199,7 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'same_site' => env('SESSION_SAME_SITE', env('APP_ENV') === 'production' ? 'none' : 'lax'),
 
     /*
     |--------------------------------------------------------------------------

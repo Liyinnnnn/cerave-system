@@ -55,6 +55,8 @@ class GoogleController extends Controller
         Auth::login($user, true);
         
         request()->session()->regenerate();
+        
+        \Log::info('User logged in and session regenerated', ['user_id' => $user->id, 'authenticated' => Auth::check()]);
 
         return redirect()->intended('/dashboard');
     }
