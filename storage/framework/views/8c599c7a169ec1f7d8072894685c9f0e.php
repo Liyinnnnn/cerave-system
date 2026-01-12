@@ -851,95 +851,84 @@
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                     <div>
-                        <a href="#" class="text-3xl font-['Pacifico'] text-white mb-6 block">CeraVe</a>
-                        <p class="text-gray-400 mb-6">Developed with dermatologists, our skincare products help restore and
-                            maintain your skin's natural protective barrier.</p>
+                        <a href="<?php echo e(route('dashboard')); ?>" class="block mb-6">
+                            <img src="<?php echo e(asset('images/CeraVeLogo.webp')); ?>" alt="CeraVe Logo" class="h-12">
+                        </a>
+                        <p class="text-gray-400 mb-6"><?php echo e($footerSettings->description ?? 'Developed with dermatologists, our skincare products help restore and maintain your skin\'s natural protective barrier.'); ?></p>
                         <div class="flex space-x-4">
-                            <a href="#"
-                                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
-                                <i class="ri-facebook-fill"></i>
-                            </a>
-                            <a href="#"
-                                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
-                                <i class="ri-instagram-line"></i>
-                            </a>
-                            <a href="#"
-                                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
-                                <i class="ri-twitter-x-line"></i>
-                            </a>
-                            <a href="#"
-                                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
-                                <i class="ri-youtube-line"></i>
-                            </a>
+                            <?php if($footerSettings->facebook_url ?? null): ?>
+                                <a href="<?php echo e($footerSettings->facebook_url); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                                    <i class="ri-facebook-fill"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if($footerSettings->instagram_url ?? null): ?>
+                                <a href="<?php echo e($footerSettings->instagram_url); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                                    <i class="ri-instagram-line"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if($footerSettings->tiktok_url ?? null): ?>
+                                <a href="<?php echo e($footerSettings->tiktok_url); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                                    <i class="ri-tiktok-line"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if($footerSettings->youtube_url ?? null): ?>
+                                <a href="<?php echo e($footerSettings->youtube_url); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors">
+                                    <i class="ri-youtube-line"></i>
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold mb-6">Products</h3>
+                        <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
                         <ul class="space-y-3">
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cleansers</a>
-                            </li>
-                            <li><a href="#"
-                                    class="text-gray-400 hover:text-white transition-colors">Moisturizers</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Serums</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Sun
-                                    Protection</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Body Care</a>
-                            </li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Baby Care</a>
-                            </li>
+                            <li><a href="<?php echo e(route('products.index')); ?>" class="text-gray-400 hover:text-white transition-colors">Products</a></li>
+                            <li><a href="<?php echo e(route('dr-c.chat')); ?>" class="text-gray-400 hover:text-white transition-colors">Dr. C Advisor</a></li>
+                            <li><a href="<?php echo e(route('consultation-reports.my-report')); ?>" class="text-gray-400 hover:text-white transition-colors">Consultation</a></li>
+                            <li><a href="<?php echo e(route('appointments.index')); ?>" class="text-gray-400 hover:text-white transition-colors">Appointments</a></li>
+                            <li><a href="<?php echo e(url('/dashboard#skincare', [], false)); ?>" class="text-gray-400 hover:text-white transition-colors">Skincare</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold mb-6">Resources</h3>
                         <ul class="space-y-3">
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Skin
-                                    Concerns</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Skincare
-                                    Education</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Ingredient
-                                    Glossary</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Skincare
-                                    Quiz</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQs</a></li>
+                            <li><a href="<?php echo e(route('profile.edit')); ?>" class="text-gray-400 hover:text-white transition-colors">My Profile</a></li>
+                            <li><a href="<?php echo e(route('consultation-reports.my-report')); ?>" class="text-gray-400 hover:text-white transition-colors">My Consultation</a></li>
+                            <li><a href="<?php echo e(route('appointments.index')); ?>" class="text-gray-400 hover:text-white transition-colors">My Appointment</a></li>
+                            <li><a href="<?php echo e(url('/dashboard#locate', [], false)); ?>" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                            <li><a href="#newsletter" class="text-gray-400 hover:text-white transition-colors">Join Us</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold mb-6">Contact</h3>
                         <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <i class="ri-map-pin-line mr-3 mt-1"></i>
-                                <span class="text-gray-400">Level 13, Menara Lien Hoe, Petaling Jaya, 47301 Malaysia</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="ri-phone-line mr-3"></i>
-                                <span class="text-gray-400">+60 3-7491 0000</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="ri-mail-line mr-3"></i>
-                                <span class="text-gray-400">contact@ceravemy.com</span>
-                            </li>
+                            <?php if($footerSettings->address ?? null): ?>
+                                <li class="flex items-start">
+                                    <i class="ri-map-pin-line mr-3 mt-1"></i>
+                                    <span class="text-gray-400"><?php echo e($footerSettings->address); ?></span>
+                                </li>
+                            <?php endif; ?>
+                            <?php if($footerSettings->phone ?? null): ?>
+                                <li class="flex items-center">
+                                    <i class="ri-phone-line mr-3"></i>
+                                    <span class="text-gray-400"><?php echo e($footerSettings->phone); ?></span>
+                                </li>
+                            <?php endif; ?>
+                            <?php if($footerSettings->email ?? null): ?>
+                                <li class="flex items-center">
+                                    <i class="ri-mail-line mr-3"></i>
+                                    <span class="text-gray-400"><?php echo e($footerSettings->email); ?></span>
+                                </li>
+                            <?php endif; ?>
                         </ul>
-                        <div class="mt-6">
-                            <h4 class="font-medium mb-3">Payment Methods</h4>
-                            <div class="flex space-x-3">
-                                <i class="ri-visa-fill text-2xl text-gray-400"></i>
-                                <i class="ri-mastercard-fill text-2xl text-gray-400"></i>
-                                <i class="ri-paypal-fill text-2xl text-gray-400"></i>
-                                <i class="ri-alipay-fill text-2xl text-gray-400"></i>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="border-t border-gray-800 pt-8">
                     <div class="flex flex-col md:flex-row justify-between items-center">
-                        <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 CeraVe Malaysia. All rights reserved.</p>
+                        <p class="text-gray-400 text-sm mb-4 md:mb-0"><?php echo e($footerSettings->copyright_text ?? '© 2025 CeraVe Malaysia. All rights reserved.'); ?></p>
                         <div class="flex space-x-6">
-                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy
-                                Policy</a>
-                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of
-                                Service</a>
-                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie
-                                Policy</a>
+                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+                            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</a>
                         </div>
                     </div>
                 </div>

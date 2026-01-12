@@ -128,11 +128,12 @@ class ProductController extends Controller
 
             $query = Product::withCount('reviews');
 
-            // Search filter
+            // Search filter (by name, category, or ID)
             if ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('category', 'like', "%{$search}%");
+                      ->orWhere('category', 'like', "%{$search}%")
+                      ->orWhere('id', $search);
                 });
             }
 

@@ -388,13 +388,10 @@
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-3 dark:text-blue-200">Products I'm Currently Using</label>
                                     <div class="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto p-4 border-2 border-gray-200 rounded-lg">
-                                        @php
-                                            $usingProducts = old('using_products', $user->using_products ?? []);
-                                        @endphp
                                         @foreach($products as $product)
                                             <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-blue-50 cursor-pointer transition-all dark:border-gray-300 dark:hover:bg-blue-100">
                                                 <input type="checkbox" name="using_products[]" value="{{ $product->id }}" 
-                                                    {{ in_array($product->id, $usingProducts) ? 'checked' : '' }}
+                                                    @if(in_array($product->id, (array)(old('using_products') ?: $user->using_products ?: []))) checked @endif
                                                     class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                                 <div class="flex-1 min-w-0">
                                                     <p class="text-sm font-semibold text-gray-800 dark:text-gray-800">{{ $product->name }}</p>

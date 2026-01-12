@@ -15,11 +15,20 @@ class VerifyEmailController extends Controller
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
+            // If user has no password, redirect to profile to set password
+            if (is_null($request->user()->password)) {
+                return redirect()->route('profile.edit')->with('status', 'email-verified');
+            }
             return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+        }
+
+        // After verification, check if user needs to set password
+        if (is_null($request->user()->password)) {
+            return redirect()->route('profile.edit')->with('status', 'email-verified');
         }
 
         return redirect()->intended(route('dashboard', absolute: false).'?verified=1');

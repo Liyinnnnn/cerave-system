@@ -164,7 +164,7 @@ class DrCController extends Controller
                     ],
                     'generationConfig' => [
                         'temperature' => 0.7,
-                        'maxOutputTokens' => 500,
+                        'maxOutputTokens' => 2000,
                         'topP' => 0.95,
                     ],
                     'safetySettings' => [
@@ -580,14 +580,17 @@ class DrCController extends Controller
                 }
             })
             ->limit(4)
-            ->get(['id', 'name', 'price', 'image_url', 'category'])
+            ->get(['id', 'name', 'price', 'image_url', 'images', 'category', 'description'])
             ->map(function ($product) {
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
                     'price' => $product->price,
-                    'image' => $product->image_url,
+                    'image' => $product->getPrimaryImage(),
+                    'image_url' => $product->image_url,
                     'category' => $product->category,
+                    'description' => strip_tags($product->description),
+                    'rating' => 4.5, // Default rating
                 ];
             })
             ->toArray();

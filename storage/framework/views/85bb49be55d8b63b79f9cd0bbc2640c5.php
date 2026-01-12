@@ -1,32 +1,30 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-indigo-950 dark:via-slate-900 dark:to-indigo-950">
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <!-- Page Header -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white text-2xl font-bold">Dr.C</span>
+<div class="min-h-screen bg-gray-50 dark:bg-slate-900">
+    <!-- Full Screen Chat Container -->
+    <div class="h-screen flex flex-col">
+        <!-- Compact Header -->
+        <div class="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-6 py-4 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                        <span class="text-white text-lg font-bold">Dr.C</span>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dr. C Skincare Advisor</h1>
-                        <p class="text-gray-600 dark:text-blue-200">AI-powered skincare guidance by CeraVe</p>
-                        <?php if($session): ?>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Session: <?php echo e($session->concerns ?? 'General'); ?></p>
-                        <?php endif; ?>
+                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Dr. C Skincare Advisor</h1>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">AI-powered skincare guidance</p>
                     </div>
                 </div>
                 <?php if(auth()->guard()->check()): ?>
-                <div class="flex gap-3">
+                <div class="flex gap-2">
                     <?php if($session): ?>
-                    <a href="<?php echo e(route('dr-c.viewReport', ['session' => $session->id])); ?>" target="_blank" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition font-medium flex items-center gap-2 shadow-md">
+                    <a href="<?php echo e(route('dr-c.viewReport', ['session' => $session->id])); ?>" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2 shadow-md">
                         <i class="ri-file-text-line"></i>
                         <span>View Report</span>
                     </a>
                     <?php endif; ?>
-                    <a href="<?php echo e(route('dr-c.chat', ['new' => 1])); ?>" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition font-medium flex items-center gap-2 shadow-md">
+                    <a href="<?php echo e(route('dr-c.chat', ['new' => 1])); ?>" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium flex items-center gap-2 shadow-md">
                         <i class="ri-add-line"></i>
                         <span>New Chat</span>
                     </a>
@@ -35,11 +33,12 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <!-- Sidebar -->
+        <!-- Main Chat Area - Full Height -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar - Collapsible -->
             <?php if(auth()->guard()->check()): ?>
-            <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-indigo-950 dark:border dark:border-slate-800 rounded-xl shadow-lg p-6">
+            <div class="w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 overflow-y-auto hidden lg:block">
+                <div class="p-4">
                     <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="ri-history-line text-blue-600 dark:text-blue-400"></i>
                         Recent Conversations
@@ -65,55 +64,80 @@
             </div>
             <?php endif; ?>
 
-            <!-- Main Chat -->
-            <div class="<?php if(auth()->guard()->check()): ?> lg:col-span-3 <?php else: ?> lg:col-span-4 <?php endif; ?>">
-                <div class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-indigo-950 dark:border dark:border-slate-800 rounded-xl shadow-lg overflow-hidden">
-                    <!-- Chat History -->
-                    <div id="chatHistory" class="h-[500px] overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-slate-800/50">
+            <!-- Main Chat Container - Full Width -->
+            <div class="flex-1 flex flex-col bg-white dark:bg-slate-800 overflow-hidden">
+                <!-- Chat History with Products Section -->
+                <div class="flex-1 overflow-y-auto">
+                    <!-- Chat Messages -->
+                    <div id="chatHistory" class="p-6 space-y-4 bg-gray-50 dark:bg-slate-900/50 min-h-[400px]">
                         <?php if($history && count($history) > 0): ?>
                             <?php $__currentLoopData = $history; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $msg): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php if($msg->message_type === 'user'): ?>
                                     <div class="flex justify-end">
-                                        <div class="max-w-md bg-blue-600 text-white rounded-lg p-4 shadow">
-                                            <p class="text-sm"><?php echo e($msg->message); ?></p>
+                                        <div class="max-w-3xl bg-blue-600 text-white rounded-2xl px-5 py-3 shadow-md">
+                                            <p class="text-sm leading-relaxed"><?php echo e($msg->message); ?></p>
                                             <span class="text-xs opacity-75 mt-1 block"><?php echo e($msg->created_at->format('H:i')); ?></span>
                                         </div>
                                     </div>
                                 <?php else: ?>
                                     <div class="flex justify-start">
-                                        <div class="max-w-md bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg p-4 shadow">
-                                            <p class="text-sm text-gray-800 dark:text-white"><?php echo e($msg->message); ?></p>
-                                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 block">Dr. C</span>
+                                        <div class="max-w-3xl bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl px-5 py-3 shadow-md">
+                                            <p class="text-sm leading-relaxed text-gray-800 dark:text-white"><?php echo e($msg->message); ?></p>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1 block">Dr. C • <?php echo e($msg->created_at->format('H:i')); ?></span>
                                         </div>
                                     </div>
                                 <?php endif; ?>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         <?php else: ?>
-                            <div class="h-full flex flex-col items-center justify-center text-gray-400">
-                                <i class="ri-message-3-line text-6xl mb-4 text-blue-300 dark:text-blue-600"></i>
-                                <p class="text-center text-gray-600 dark:text-gray-400">
-                                    Start a conversation with Dr. C<br>
-                                    <span class="text-xs">Share your skincare concerns</span>
+                            <div class="h-full flex flex-col items-center justify-center py-20">
+                                <i class="ri-message-3-line text-7xl mb-4 text-blue-400 dark:text-blue-600"></i>
+                                <p class="text-center text-gray-600 dark:text-gray-400 text-lg mb-2">
+                                    Welcome to Dr. C Skincare Advisor
+                                </p>
+                                <p class="text-center text-gray-500 dark:text-gray-500 text-sm">
+                                    Share your skincare concerns and I'll provide personalized guidance
                                 </p>
                             </div>
                         <?php endif; ?>
                     </div>
 
+                    <!-- Product Recommendations - Inside Scrollable Area -->
+                    <div id="productRecommendations" class="hidden px-6 py-8 bg-gradient-to-b from-blue-50 to-white dark:from-slate-800 dark:to-slate-900 border-t-2 border-blue-200 dark:border-blue-700">
+                        <div class="max-w-7xl mx-auto">
+                            <div class="mb-6 flex items-center gap-3">
+                                <div class="bg-blue-600 dark:bg-blue-500 p-2.5 rounded-xl shadow-lg">
+                                    <i class="ri-shopping-bag-line text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-gray-900 dark:text-white">Recommended Products</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Personalized for your skin concerns</p>
+                                </div>
+                            </div>
+                            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fixed Bottom Section -->
+                <div class="flex-shrink-0">
                     <!-- Quick Concerns -->
-                    <div class="px-6 py-4 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700">
+                    <div class="px-6 py-3 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700">
                         <p class="text-xs text-gray-600 dark:text-gray-400 mb-2 font-medium">Quick concerns:</p>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="fillMessage('I have acne and breakouts')" class="px-3 py-1 bg-gray-100 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-full text-xs transition">
+                            <button onclick="fillMessage('I have acne and breakouts')" class="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 hover:bg-blue-200 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded-full text-xs transition shadow-sm font-medium">
                                 🔴 Acne
                             </button>
-                            <button onclick="fillMessage('I have dry skin')" class="px-3 py-1 bg-gray-100 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-full text-xs transition">
+                            <button onclick="fillMessage('I have dry skin')" class="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 hover:bg-blue-200 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded-full text-xs transition shadow-sm font-medium">
                                 🏜️ Dry Skin
                             </button>
-                            <button onclick="fillMessage('I have oily skin')" class="px-3 py-1 bg-gray-100 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-full text-xs transition">
+                            <button onclick="fillMessage('I have oily skin')" class="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 hover:bg-blue-200 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded-full text-xs transition shadow-sm font-medium">
                                 💧 Oily Skin
                             </button>
-                            <button onclick="fillMessage('I have sensitive skin')" class="px-3 py-1 bg-gray-100 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-full text-xs transition">
+                            <button onclick="fillMessage('I have sensitive skin')" class="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 hover:bg-blue-200 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded-full text-xs transition shadow-sm font-medium">
                                 😊 Sensitive
+                            </button>
+                            <button onclick="fillMessage('I want anti-aging products')" class="px-3 py-1.5 bg-gray-200 dark:bg-slate-700 hover:bg-blue-200 dark:hover:bg-slate-600 text-gray-800 dark:text-gray-200 rounded-full text-xs transition shadow-sm font-medium">
+                                ⏰ Anti-Aging
                             </button>
                         </div>
                     </div>
@@ -134,7 +158,7 @@
                                    maxlength="1000" 
                                    required>
                             <button type="submit" id="sendBtn"
-                                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition font-medium flex items-center gap-2">
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2 shadow-md">
                                 <span>Send</span>
                                 <i class="ri-send-plane-fill"></i>
                             </button>
@@ -147,12 +171,6 @@
                             <?php endif; ?>
                         </p>
                     </div>
-                </div>
-
-                <!-- Product Recommendations -->
-                <div id="productRecommendations" class="mt-6 hidden">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Recommended Products</h3>
-                    <div id="productGrid" class="grid grid-cols-1 md:grid-cols-4 gap-4"></div>
                 </div>
             </div>
         </div>
@@ -246,11 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const bubble = document.createElement('div');
         bubble.className = sender === 'user'
-            ? 'max-w-md bg-blue-600 text-white rounded-lg p-4 shadow'
-            : 'max-w-md bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg p-4 shadow';
+            ? 'max-w-3xl bg-blue-600 text-white rounded-2xl px-5 py-3 shadow-md'
+            : 'max-w-3xl bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl px-5 py-3 shadow-md';
 
         const paragraph = document.createElement('p');
-        paragraph.className = sender === 'user' ? 'text-sm' : 'text-sm text-gray-800 dark:text-white';
+        paragraph.className = sender === 'user' ? 'text-sm leading-relaxed' : 'text-sm leading-relaxed text-gray-800 dark:text-white';
         paragraph.textContent = text;
 
         bubble.appendChild(paragraph);
@@ -259,12 +277,15 @@ document.addEventListener('DOMContentLoaded', function() {
         timestamp.className = sender === 'user'
             ? 'text-xs opacity-75 mt-1 block'
             : 'text-xs text-gray-500 dark:text-gray-400 mt-1 block';
-        timestamp.textContent = sender === 'user' ? new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Dr. C';
+        timestamp.textContent = sender === 'user' ? new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Dr. C • ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
         bubble.appendChild(timestamp);
         messageDiv.appendChild(bubble);
         chatHistory.appendChild(messageDiv);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        // Scroll the parent container smoothly
+        const scrollContainer = chatHistory.parentElement;
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
 
     function displayProducts(products) {
@@ -272,21 +293,69 @@ document.addEventListener('DOMContentLoaded', function() {
         grid.innerHTML = '';
 
         products.forEach(product => {
+            // Create card with professional design
             const card = document.createElement('div');
-            card.className = 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden hover:shadow-lg transition';
+            card.className = 'group bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 dark:bg-gradient-to-br dark:from-indigo-900 dark:to-indigo-800 dark:border-2 dark:border-indigo-700';
+            
+            // Get primary image or use placeholder
+            const productImage = product.image || product.image_url || '/images/placeholder.jpg';
+            
+            // Build rating stars
+            const rating = Math.round(product.rating || 4.5);
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="ri-star-fill text-yellow-400 text-xs"></i>';
+                } else {
+                    stars += '<i class="ri-star-line text-yellow-400 text-xs"></i>';
+                }
+            }
+            
+            // Truncate description
+            const description = product.description ? 
+                (product.description.length > 80 ? product.description.substring(0, 80) + '...' : product.description) : 
+                'Recommended for your skin concerns';
+            
             card.innerHTML = `
-                <img src="${product.image || '/images/placeholder.jpg'}" alt="${product.name}" class="w-full h-40 object-cover">
-                <div class="p-4">
-                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-2">${product.name}</h4>
-                    <a href="/products/${product.id}" class="block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm transition">
-                        View Product
-                    </a>
-                </div>
+                <a href="/products/${product.id}" class="block cursor-pointer h-full flex flex-col">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-slate-700 dark:to-slate-800">
+                        <img src="${productImage}" alt="${product.name}" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" 
+                             onerror="this.parentElement.innerHTML='<div class=\\'flex flex-col items-center justify-center h-full text-gray-400\\'><svg class=\\'w-20 h-20 mb-3\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'1.5\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'></path></svg><span class=\\'text-sm font-medium\\'>No image available</span></div>'">
+                        <div class="absolute top-3 right-3 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-full shadow-lg">
+                            <div class="flex gap-0.5">${stars}</div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <div class="mb-3">
+                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide dark:bg-blue-900 dark:text-blue-200">${product.category || 'Featured'}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2 dark:text-white leading-tight line-clamp-2 min-h-[3.5rem]">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4 dark:text-blue-200 line-clamp-2 flex-1">${description}</p>
+                        <div class="mt-auto pt-3 border-t border-gray-100 dark:border-indigo-700">
+                            <div class="flex items-center justify-between">
+                                <span class="text-blue-600 dark:text-blue-400 font-semibold text-sm">View Details</span>
+                                <i class="ri-arrow-right-line text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             `;
             grid.appendChild(card);
         });
 
         document.getElementById('productRecommendations').classList.remove('hidden');
+        
+        // Smooth scroll to show the products section
+        setTimeout(() => {
+            const scrollContainer = document.querySelector('.overflow-y-auto');
+            const productsSection = document.getElementById('productRecommendations');
+            if (scrollContainer && productsSection) {
+                scrollContainer.scrollTo({
+                    top: scrollContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }, 150);
     }
 
     function showError(message) {

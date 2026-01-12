@@ -15,10 +15,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
     <link href="<?php echo e(asset("css/style.css")); ?>" rel="stylesheet">
-    <?php echo app('Illuminate\Foundation\Vite')(["resources/css/app.css", "resources/js/app.js"]); ?>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        // Configure Tailwind for dark mode
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    
+    <!-- Dark mode initialization script (must run before body renders) -->
+    <script>
+        // Apply saved theme immediately to prevent flash
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Required field validation styling */
+        input:required:invalid,
+        textarea:required:invalid,
+        select:required:invalid {
+            border-color: #fee;
+        }
+        input:required:valid,
+        textarea:required:valid,
+        select:required:valid {
+            border-color: #e5e7eb;
+        }
+        /* Toast notification animation */
+        @keyframes slide-in-right {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-in-right {
+            animation: slide-in-right 0.3s ease-out;
+        }
+    </style>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Setup Axios defaults
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]')?.content;
+    </script>
 </head>
 
-<body class="bg-white text-gray-800 dark:bg-gradient-to-b dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-blue-50">
+<body class="bg-gradient-to-br from-blue-100 via-blue-50 to-cyan-100 text-gray-800 dark:bg-gradient-to-b dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 dark:text-blue-50">
 
     
     <nav class="fixed top-0 left-0 right-0 bg-white shadow py-4 px-8 flex justify-between items-center z-50 dark:bg-slate-900 dark:shadow-indigo-900/40">
@@ -82,7 +141,6 @@
                     <li><a href="<?php echo e(route('appointments.index')); ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 dark:hover:bg-slate-700"><i class="ri-list-check-2 text-blue-600 dark:text-blue-400"></i><span>My Appointments</span></a></li>
                     <?php if(auth()->user()->isAdmin() || auth()->user()->isConsultant()): ?>
                     <li><a href="<?php echo e(route('appointments.manage')); ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 dark:hover:bg-slate-700"><i class="ri-dashboard-line text-blue-600 dark:text-blue-400"></i><span>Manage Appointments</span></a></li>
-                    <li><a href="<?php echo e(route('appointments.reports')); ?>" class="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 dark:hover:bg-slate-700"><i class="ri-file-chart-line text-blue-600 dark:text-blue-400"></i><span>Appointments Report</span></a></li>
                     <?php endif; ?>
                     <?php endif; ?>
                 </ul>
@@ -146,15 +204,12 @@
         </ul>
     </nav>
 
-    <!-- Floating Theme Toggle Button (Below Navbar, single global control) -->
-    <button id="themeToggle" class="fixed top-20 right-6 z-40 p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-slate-700 cursor-pointer" aria-label="Toggle theme">
-        <i id="sunIcon" class="ri-sun-line text-xl text-gray-800 dark:hidden"></i>
-        <i id="moonIcon" class="ri-moon-line text-xl text-gray-200 hidden dark:inline-block"></i>
-    </button>
-        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <!-- Floating Theme Toggle Button (Below Navbar, 1cm lower) -->
+    <button id="themeToggle" class="fixed top-32 right-6 z-40 p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-slate-700 cursor-pointer" aria-label="Toggle theme">
+        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364 6.364l-1.414-1.414M7.05 7.05 5.636 5.636m12.728 0-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z" />
         </svg>
-        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-300 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
     </button>
@@ -171,28 +226,31 @@
             const moon = document.getElementById('moonIcon');
             const btn = document.getElementById('themeToggle');
 
-            const setState = (isDark) => {
+            const updateIcons = (isDark) => {
                 if (sun && moon) {
-                    sun.classList.toggle('hidden', isDark);
-                    moon.classList.toggle('hidden', !isDark);
+                    if (isDark) {
+                        sun.classList.add('hidden');
+                        moon.classList.remove('hidden');
+                    } else {
+                        sun.classList.remove('hidden');
+                        moon.classList.add('hidden');
+                    }
                 }
             };
 
-            const applySaved = () => {
-                const saved = localStorage.getItem('theme');
-                const startDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                if (startDark) root.classList.add('dark');
-                setState(root.classList.contains('dark'));
-            };
-
-            const toggle = () => {
+            const toggleTheme = () => {
                 const isDark = root.classList.toggle('dark');
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                setState(isDark);
+                updateIcons(isDark);
             };
 
-            applySaved();
-            if (btn) btn.addEventListener('click', toggle);
+            // Initialize icons based on current state
+            updateIcons(root.classList.contains('dark'));
+            
+            // Add click listener
+            if (btn) {
+                btn.addEventListener('click', toggleTheme);
+            }
         })();
 
         document.addEventListener("DOMContentLoaded", function() {

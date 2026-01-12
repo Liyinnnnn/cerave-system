@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12 dark:from-indigo-950 dark:via-slate-900 dark:to-indigo-950">
+<div class="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-cyan-100 py-12 dark:from-indigo-950 dark:via-slate-900 dark:to-indigo-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header with Actions -->
         <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
@@ -18,7 +18,7 @@
                 <a href="{{ route('consultation-reports.export-pdf', $user) }}" 
                    target="_blank"
                    class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition shadow-md dark:bg-gray-700 dark:hover:bg-gray-800 no-print">
-                    📄 Export PDF
+                    �️ Print Report
                 </a>
                 <button onclick="window.print()" 
                         class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-md dark:bg-blue-700 dark:hover:bg-blue-800 no-print">
@@ -42,7 +42,7 @@
                 <div class="flex-1">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $user->name }}</h2>
                     @if($user->nickname)
-                        <p class="text-gray-600 mt-1 dark:text-blue-300">@{{ $user->nickname }}</p>
+                        <p class="text-gray-600 mt-1 dark:text-blue-300">{{ $user->nickname }}</p>
                     @endif
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>

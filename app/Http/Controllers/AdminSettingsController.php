@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\FooterSetting;
 use App\Traits\ResponseHelper;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,9 @@ class AdminSettingsController extends Controller
                 'tagline' => Setting::get('tagline', 'Dermatologist-Recommended Skincare'),
             ];
 
-            return view('admin.settings', compact('settings'));
+            $footer = FooterSetting::first();
+
+            return view('admin.settings', compact('settings', 'footer'));
         } catch (\Exception $e) {
             \Log::error('Admin settings load failed', ['error' => $e->getMessage()]);
             return $this->error('Failed to load settings.', 'ERR_SETTINGS_LOAD');

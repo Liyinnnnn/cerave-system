@@ -10,8 +10,8 @@
                 <p class="text-gray-600 dark:text-gray-300">Overview of users, appointments, and product insights.</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('appointments.export') }}" class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-white">Export Appointments</a>
-                <a href="{{ route('appointments.reports') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-blue-700">View Appointment Reports</a>
+                <a href="{{ route('appointments.manage') }}" class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-white">Manage Appointments</a>
+                <a href="{{ route('appointments.manage') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm text-sm font-semibold hover:bg-blue-700">View All Appointments</a>
             </div>
         </div>
 

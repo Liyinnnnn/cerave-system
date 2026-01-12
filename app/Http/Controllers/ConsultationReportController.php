@@ -24,20 +24,71 @@ class ConsultationReportController extends Controller
         }
 
         $search = $request->get('search');
+        $startDate = $request->get('start_date', now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->get('end_date', now()->format('Y-m-d'));
+        $status = $request->get('status');
         
         $users = User::where('role', 'consumer')
             ->when($search, function($query) use ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                       ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('phone', 'like', "%{$search}%");
+                      ->orWhere('phone', 'like', "%{$search}%")
+                      ->orWhere('id', $search);
                 });
+            })
+            ->when($startDate && $endDate, function($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            })
+            ->when($status === 'active', function($query) {
+                $query->where(function($q) {
+                    $q->has('appointments')->orHas('drCSessions');
+                });
+            })
+            ->when($status === 'inactive', function($query) {
+                $query->doesntHave('appointments')->doesntHave('drCSessions');
             })
             ->withCount(['appointments', 'drCSessions'])
             ->latest()
             ->paginate(20);
 
-        return view('consultation-reports.index', compact('users', 'search'));
+        // Calculate statistics
+        $totalUsers = User::where('role', 'consumer')->count();
+        $totalAppointments = Appointment::whereIn('user_id', User::where('role', 'consumer')->pluck('id'))->count();
+        $totalDrCSessions = DrCSession::whereIn('user_id', User::where('role', 'consumer')->pluck('id'))->count();
+        $avgAppointments = $totalUsers > 0 ? round($totalAppointments / $totalUsers, 1) : 0;
+
+        // Analytics data - User registration trend (last 30 days)
+        $dailyUserTrend = User::where('role', 'consumer')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        // Engagement breakdown (users with appointments vs Dr. C only vs inactive)
+        $usersWithAppointments = User::where('role', 'consumer')
+            ->has('appointments')
+            ->count();
+        $usersWithDrCOnly = User::where('role', 'consumer')
+            ->has('drCSessions')
+            ->doesntHave('appointments')
+            ->count();
+        $inactiveUsers = User::where('role', 'consumer')
+            ->doesntHave('appointments')
+            ->doesntHave('drCSessions')
+            ->count();
+
+        $engagementData = [
+            ['type' => 'With Appointments', 'count' => $usersWithAppointments],
+            ['type' => 'Dr. C Only', 'count' => $usersWithDrCOnly],
+            ['type' => 'Inactive', 'count' => $inactiveUsers],
+        ];
+
+        return view('consultation-reports.index', compact('users', 'search', 'totalUsers', 'totalAppointments', 'totalDrCSessions', 'avgAppointments', 'dailyUserTrend', 'engagementData'));
     }
 
     /**

@@ -58,6 +58,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/dr-c/sessions/{session}', [DrCController::class, 'deleteSession'])->name('admin.dr-c.deleteSession');
     Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
     Route::patch('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+    
+    // Footer settings (via settings page)
+    Route::patch('/admin/footer', [\App\Http\Controllers\FooterSettingController::class, 'update'])->name('admin.footer.update');
 });
 
 // Authenticated routes
@@ -80,8 +83,6 @@ Route::middleware('auth')->group(function () {
     // Appointments (view/manage requires auth)
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::get('/appointments/manage/dashboard', [AppointmentController::class, 'manage'])->middleware('role:admin,consultant')->name('appointments.manage');
-    Route::get('/appointments/reports/analytics', [\App\Http\Controllers\AppointmentReportController::class, 'index'])->middleware('role:admin,consultant')->name('appointments.reports');
-    Route::get('/appointments/reports/export', [\App\Http\Controllers\AppointmentReportController::class, 'export'])->middleware('role:admin,consultant')->name('appointments.export');
     Route::get('/appointments/{appointment}', [AppointmentController::class, 'show'])->name('appointments.show');
     Route::get('/appointments/{appointment}/consultation-report', [AppointmentController::class, 'consultationReport'])->name('appointments.consultationReport');
     Route::get('/appointments/{appointment}/report', [AppointmentController::class, 'viewReport'])->name('appointments.report');
@@ -132,9 +133,25 @@ Route::middleware('auth')->group(function () {
 // Allow appointment creation for guests and authenticated users
 Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
 
-// OAuth (Google) - Remove guest middleware to prevent blocking
-Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
-    ->name('oauth.google.redirect');
-Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
+// OAuth (Google)
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleController::class, 'redirect'])
+        ->name('oauth.google.redirect');
+    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
+});
+
+// API Health Check (for testing only)
+Route::get('/api-health', function() {
+    return response()->json([
+        'app_status' => 'running',
+        'environment' => config('app.env'),
+        'apis' => [
+            'gemini' => config('services.gemini.api_key') ? 'configured' : 'missing',
+            'google_oauth' => config('services.google.client_id') ? 'configured' : 'missing',
+            'mail' => config('mail.mailers.smtp.username') ? 'configured' : 'missing',
+        ],
+        'database' => \DB::connection()->getPdo() ? 'connected' : 'disconnected',
+    ]);
+});
 
 require __DIR__ . '/auth.php';
