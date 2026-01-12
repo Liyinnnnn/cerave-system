@@ -53,4 +53,6 @@ class ConsultationReportCompleted extends Notification
             'consultation_type' => get_class($this->consultation),
             'report_url' => $this->reportUrl,
             'created_at' => now()->toDateTimeString(),
+        ];
+    }
 }
